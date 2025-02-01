@@ -8,19 +8,19 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Projeto Pos Docker/Projeto Pos Docker.csproj", "Projeto Pos Docker/"]
-RUN dotnet restore "./Projeto Pos Docker/Projeto Pos Docker.csproj" -c $BUILD_CONFIGURATION
+COPY ["ProjetoPosDocker/ProjetoPosDocker.csproj", "ProjetoPosDocker/"]
+RUN dotnet restore "./ProjetoPosDocker/Projeto Pos Docker.csproj" -c $BUILD_CONFIGURATION
 COPY . .
-WORKDIR "/src/Projeto Pos Docker"
-RUN dotnet build "./Projeto Pos Docker.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/ProjetoPosDocker"
+RUN dotnet build "./ProjetoPosDocker.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Etapa de publicação: Publica a aplicação para ser copiada para a etapa final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Projeto Pos Docker.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./ProjetoPosDocker.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Etapa final: Copia os arquivos para a imagem base
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Projeto Pos Docker.dll"]
+ENTRYPOINT ["dotnet", "ProjetoPosDocker.dll"]
